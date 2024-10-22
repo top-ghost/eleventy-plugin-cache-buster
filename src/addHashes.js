@@ -29,18 +29,18 @@ module.exports = function (outputDir, options = defaultOptions) {
 
   const resourceTagNames = Object.keys(sourceAttributes);
 
-  let isResourceTag = null;
-  if (
-    resourceTagNames.includes(node.tagName) &&
-    typeof sourceAttributes[node.tagName] === Object
-  ) {
-    isResourceTag = (node) =>
-      Array.from(sourceAttributes[node.tagName]).every(
+  let isResourceTag = (node) => {
+    if (
+      resourceTagNames.includes(node.tagName) &&
+      typeof sourceAttributes[node.tagName] === Object
+    ) {
+      return Array.from(sourceAttributes[node.tagName]).every(
         (pair) => node.getAttribute(pair[0]) === pair[1]
       );
-  } else {
-    isResourceTag = (node) => resourceTagNames.includes(node.tagName);
-  }
+    } else {
+      return resourceTagNames.includes(node.tagName);
+    }
+  };
 
   const findResourceNodes = findNodes.bind(null, isResourceTag);
 
