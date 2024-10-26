@@ -34,7 +34,7 @@ module.exports = function (outputDir, options = defaultOptions) {
       resourceTagNames.includes(node.tagName) &&
       typeof sourceAttributes[node.tagName] === Object
     ) {
-      return Array.from(sourceAttributes[node.tagName]).every(
+      return Object.entries(sourceAttributes[node.tagName]).every(
         (pair) => node.getAttribute(pair[0]) === pair[1]
       );
     } else {
