@@ -15,6 +15,10 @@ const parserOptions = {
 const defaultOptions = {
   hashParameter: "v",
   sourceAttributes: {
+    link: "href",
+    script: "src",
+  },
+  searchAttributes: {
     link: { rel: "stylesheet" },
     script: "src",
   },
@@ -22,20 +26,38 @@ const defaultOptions = {
 };
 
 module.exports = function (outputDir, options = defaultOptions) {
-  const { hashParameter, sourceAttributes, createResourceHash } = merge(
-    defaultOptions,
-    options
-  );
+  const {
+    hashParameter,
+    sourceAttributes,
+    searchAttributes,
+    createResourceHash,
+  } = merge(defaultOptions, options);
 
   const resourceTagNames = Object.keys(sourceAttributes);
 
   let isResourceTag = (node) => {
     if (
       resourceTagNames.includes(node.tagName) &&
-      typeof sourceAttributes[node.tagName] === Object
+      !!node.attrs &&
+      typeof searchAttributes[node.tagName] === "object"
     ) {
-      return Object.entries(sourceAttributes[node.tagName]).every(
-        (pair) => node.getAttribute(pair[0]) === pair[1]
+      if (
+        Object.entries(searchAttributes[node.tagName]).every((pair) =>
+          node.attrs.some(
+            (attr) => attr.name === pair[0] && attr.value === pair[1]
+          )
+        )
+      ) {
+        console.log(
+          `recommending ${node.tagName} with attrs ${JSON.stringify(
+            node.attrs
+          )} for hashing`
+        );
+      }
+      return Object.entries(searchAttributes[node.tagName]).every((pair) =>
+        node.attrs.some(
+          (attr) => attr.name === pair[0] && attr.value === pair[1]
+        )
       );
     } else {
       return resourceTagNames.includes(node.tagName);
