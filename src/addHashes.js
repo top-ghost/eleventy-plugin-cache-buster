@@ -41,19 +41,6 @@ module.exports = function (outputDir, options = defaultOptions) {
       !!node.attrs &&
       typeof searchAttributes[node.tagName] === "object"
     ) {
-      if (
-        Object.entries(searchAttributes[node.tagName]).every((pair) =>
-          node.attrs.some(
-            (attr) => attr.name === pair[0] && attr.value === pair[1]
-          )
-        )
-      ) {
-        console.log(
-          `recommending ${node.tagName} with attrs ${JSON.stringify(
-            node.attrs
-          )} for hashing`
-        );
-      }
       return Object.entries(searchAttributes[node.tagName]).every((pair) =>
         node.attrs.some(
           (attr) => attr.name === pair[0] && attr.value === pair[1]
